@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Nail Disease Image Classification</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+  <!-- Favicons -->
+  <link href="static/assets/img/favicon.png" rel="icon">
+  <link href="static/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Jost:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="static/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="static/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="static/assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="static/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="static/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="static/assets/css/main.css" rel="stylesheet">
+<style>
+  .four-columns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .column {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .column:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .column h2 {
+    color: #2563eb;
+    font-size: 1.2rem;
+    margin-top: 0;
+  }
+
+  .column ul {
+    padding-left: 1.2rem;
+  }
+
+  .column ul li {
+    margin-bottom: 0.5rem;
+  }
+
+  /* Responsive for small screens */
+  @media (max-width: 768px) {
+    .three-columns {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+
+<body class="index-page">
+
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+
+      <a href="index.html" class="logo d-flex align-items-center me-auto">
+        <!-- Uncomment the line below if you also wish to use an image logo -->
+        <!-- <img src="assets/img/logo.png" alt=""> -->
+        <h1 class="sitename">Nail Disease Image Classification</h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="#hero" class="active">Home</a></li>
+          <li><a href="#about">Predicted Result</a></li>
+          <li><a href="/">Logout</a></li>
+          
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section dark-background">
+
+      <div class="container">
+        <div class="row gy-4">
+          <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="zoom-out">
+            <h1>Upload Disease Image </h1>
+            <p>We diagonise your Nail Disease Status using Deep Learning</p>
+            <div class="d-flex">
+                        <div class="col-lg-7">
+            <form action="{{url_for ('upload') }}" method="POST" enctype="multipart/form-data"  >
+		<input type="file" name="file" class="btn btn-success"><br>
+			<button type="submit" class="btn btn-success" action="{{url_for('upload')}}">Predict</button>
+		</form>
+          </div><!-- End Contact Form -->
+
+			  </div>
+          </div>
+          <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-out" data-aos-delay="200">
+            <img src="static/assets/img/hero-img.png" class="img-fluid animated" alt="">
+          </div>
+        </div>
+      </div>
+
+    </section><!-- /Hero Section -->
+
+    <!-- Clients Section -->
+
+    <!-- About Section -->
+    <section id="about" class="about section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Result</h2>
+      </div><!-- End Section Title -->
+
+      <div class="container">
+
+        <div class="row gy-4">
+
+          <div class="col-lg-6 content" data-aos="fade-up" data-aos-delay="100">
+            <h1>Input Image </h1>
+			<p>
+			<img src="./static/uploads/{{fname}}" width="150" height="150"><br>
+              
+            </p>
+
+          </div>
+
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+		  <h1>Diagonised Results </h1>
+            <p><b>Diagonised As : </b> {{ preds }} </p>
+            <p><b>Predicted Pecentage As :</b> {{ conf }} %</p>
+            <a href="#" class="read-more"><span>Accuracy</span><i class="bi bi-arrow-right"></i></a>
+          </div>
+
+{%  if preds=="Acral_Lentiginous_Melanoma" %}
+<div class="four-columns">
+  <div class="column">
+    <h2>Symptoms</h2>
+    <ul>
+      <li>Dark streak under the nail (often brown or black)</li>
+      <li>Nail splitting or lifting</li>
+      <li>Bleeding or oozing from nail area</li>
+      <li>Swelling or pain in the nail bed</li>
+      <li>Changes in nail color or shape</li>
+      <li>Persistent nail lesion that does not heal</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Causes</h2>
+    <ul>
+      <li>Uncontrolled growth of melanocytes (pigment cells)</li>
+      <li>Genetic mutations (e.g., KIT mutations)</li>
+      <li>Higher risk in people with darker skin tones</li>
+      <li>History of trauma or chronic irritation to the nail</li>
+      <li>Not typically related to UV exposure (unlike other melanomas)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Organs Infected</h2>
+    <ul>
+      <li>Primarily nails (subungual region)</li>
+      <li>Surrounding skin of fingers or toes</li>
+      <li>Nearby lymph nodes (if spread occurs)</li>
+      <li>Lungs (in advanced metastasis)</li>
+      <li>Liver and bones (late-stage cases)</li>
+      <li>Brain (rare but possible in advanced spread)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Treatment</h2>
+    <ul>
+      <li>Surgical removal of the tumor or affected nail</li>
+      <li>Amputation of part of the digit if deeply invasive</li>
+      <li>Sentinel lymph node biopsy for spread detection</li>
+      <li>Immunotherapy (e.g., pembrolizumab, nivolumab)</li>
+      <li>Targeted therapy (e.g., imatinib for KIT mutations)</li>
+      <li>Radiation therapy in non-surgical cases</li>
+    </ul>
+  </div>
+</div>
+
+{% endif %}
+
+{%  if preds=="beau_s lines" %}
+<div class="four-columns">
+  <div class="column">
+    <h2>Symptoms</h2>
+    <ul>
+      <li>Horizontal grooves or depressions across the nail plate</li>
+      <li>Visible ridges that move forward as the nail grows</li>
+      <li>May affect one or multiple nails</li>
+      <li>Nail thinning or brittleness in severe cases</li>
+      <li>Discoloration near the grooves (sometimes)</li>
+      <li>Temporary halt in nail growth</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Causes</h2>
+    <ul>
+      <li>Severe illness (e.g., high fever, infections)</li>
+      <li>Chemotherapy or radiation treatment</li>
+      <li>Uncontrolled diabetes or peripheral vascular disease</li>
+      <li>Zinc deficiency or malnutrition</li>
+      <li>Trauma or injury to the nail matrix</li>
+      <li>Systemic diseases (e.g., kidney or liver disease)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Organs Infected</h2>
+    <ul>
+      <li>Nails (fingernails and toenails)</li>
+      <li>Nail matrix (where nail growth begins)</li>
+      <li>Indirectly linked with systemic organs depending on cause (e.g., kidney, liver, immune system)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Treatment</h2>
+    <ul>
+      <li>Treat underlying medical condition (infection, diabetes, malnutrition)</li>
+      <li>Maintain proper nutrition (zinc, protein, vitamins)</li>
+      <li>Protect nails from trauma or pressure</li>
+      <li>Good nail hygiene and moisturizing</li>
+      <li>Medical management for systemic diseases</li>
+      <li>Grooves usually grow out naturally once the cause is resolved</li>
+    </ul>
+  </div>
+</div>
+
+{% endif %}
+
+{%  if preds=="blue_finger" %}
+<div class="four-columns">
+  <div class="column">
+    <h2>Symptoms</h2>
+    <ul>
+      <li>Blue or bluish-purple discoloration of nails or fingertips</li>
+      <li>Coldness in fingers or toes</li>
+      <li>Numbness or tingling sensation</li>
+      <li>Pain or discomfort in affected fingers (sometimes)</li>
+      <li>Slow healing of small cuts or injuries</li>
+      <li>May appear suddenly or persistently depending on cause</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Causes</h2>
+    <ul>
+      <li>Reduced oxygen supply in blood (peripheral cyanosis)</li>
+      <li>Poor circulation (Raynaud’s phenomenon, vascular disease)</li>
+      <li>Heart conditions (congenital heart disease, heart failure)</li>
+      <li>Lung diseases (COPD, pneumonia, asthma)</li>
+      <li>Exposure to extreme cold or frostbite</li>
+      <li>Certain medications or chemical exposure (rare)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Organs Infected</h2>
+    <ul>
+      <li>Nails and fingertips (directly visible)</li>
+      <li>Blood vessels (circulatory system)</li>
+      <li>Heart (if cardiovascular condition is the cause)</li>
+      <li>Lungs (if respiratory disorder is the cause)</li>
+      <li>Skin and peripheral tissues (due to low oxygen levels)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Treatment</h2>
+    <ul>
+      <li>Treat underlying cause (heart or lung disease management)</li>
+      <li>Improve circulation through warmth and exercise</li>
+      <li>Medications for blood flow (vasodilators in Raynaud’s)</li>
+      <li>Oxygen therapy in respiratory conditions</li>
+      <li>Smoking cessation to improve vascular health</li>
+      <li>Protect hands and feet from extreme cold</li>
+    </ul>
+  </div>
+</div>
+
+{% endif %}
+{%  if preds=="clubbing" %}
+<div class="four-columns">
+  <div class="column">
+    <h2>Symptoms</h2>
+    <ul>
+      <li>Bulbous enlargement of the fingertips</li>
+      <li>Downward curving of the nails</li>
+      <li>Softening of the nail beds</li>
+      <li>Increased angle between nail and cuticle (&gt;180°)</li>
+      <li>Spongy or floating sensation when pressing nail bed</li>
+      <li>May be painless but progressive over time</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Causes</h2>
+    <ul>
+      <li>Chronic lung diseases (lung cancer, bronchiectasis, pulmonary fibrosis)</li>
+      <li>Heart diseases (congenital heart defects, endocarditis)</li>
+      <li>Inflammatory bowel diseases (Crohn’s, ulcerative colitis)</li>
+      <li>Liver cirrhosis and other chronic liver diseases</li>
+      <li>Thyroid disorders (rare)</li>
+      <li>Idiopathic (unknown cause in some cases)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Organs Infected</h2>
+    <ul>
+      <li>Nails and fingertips (directly visible)</li>
+      <li>Lungs (most common source of underlying disease)</li>
+      <li>Heart (cardiovascular involvement)</li>
+      <li>Liver (in cirrhosis and chronic liver conditions)</li>
+      <li>Digestive system (in IBD-related cases)</li>
+      <li>Endocrine system (rarely, in thyroid disorders)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Treatment</h2>
+    <ul>
+      <li>No direct cure for clubbing (focus on treating underlying condition)</li>
+      <li>Medications for lung/heart diseases (antibiotics, steroids, bronchodilators)</li>
+      <li>Surgery or chemotherapy/radiotherapy for lung cancer</li>
+      <li>Liver disease management (transplant in severe cases)</li>
+      <li>Treatment of inflammatory bowel disease (immunosuppressants, biologics)</li>
+      <li>Regular monitoring of nail and overall systemic health</li>
+    </ul>
+  </div>
+</div>
+
+{% endif %}
+
+{%  if preds=="healthy" %}
+<div class="four-columns">
+  <div class="column">
+    <h2>Symptoms (Signs of Healthy Nails)</h2>
+    <ul>
+      <li>Smooth surface without pits or grooves</li>
+      <li>Consistent pinkish color with white tips</li>
+      <li>Uniform thickness and strong texture</li>
+      <li>No discoloration (yellow, blue, or black)</li>
+      <li>No swelling, redness, or pain around the nail</li>
+      <li>Steady growth at a normal rate</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Causes (Factors Supporting Healthy Nails)</h2>
+    <ul>
+      <li>Balanced diet rich in protein, vitamins, and minerals</li>
+      <li>Proper hydration and good blood circulation</li>
+      <li>Regular nail hygiene and trimming</li>
+      <li>Protection from trauma or chemical exposure</li>
+      <li>Healthy lifestyle (exercise, no smoking)</li>
+      <li>Avoidance of frequent harsh nail treatments</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Organs Involved</h2>
+    <ul>
+      <li>Nails (fingernails and toenails)</li>
+      <li>Nail matrix (responsible for nail growth)</li>
+      <li>Skin and cuticle surrounding the nail</li>
+      <li>Blood vessels (supply nutrients and oxygen)</li>
+      <li>Immune system (prevents infections)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Treatment / Prevention</h2>
+    <ul>
+      <li>Maintain a balanced diet (biotin, zinc, iron, vitamin E)</li>
+      <li>Keep nails clean, dry, and trimmed</li>
+      <li>Moisturize nails and cuticles regularly</li>
+      <li>Wear gloves when exposed to chemicals or water</li>
+      <li>Avoid biting or picking nails</li>
+      <li>Seek medical advice if sudden nail changes occur</li>
+    </ul>
+  </div>
+</div>
+
+{% endif %}
+{%  if preds=="koilonychia" %}
+<div class="four-columns">
+  <div class="column">
+    <h2>Symptoms</h2>
+    <ul>
+      <li>Thin, brittle nails</li>
+      <li>Spoon-shaped depression in the center of the nail</li>
+      <li>Edges of nails turned upward</li>
+      <li>Nails break or split easily</li>
+      <li>Pale or whitish nail color (sometimes)</li>
+      <li>Can affect one nail or multiple nails</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Causes</h2>
+    <ul>
+      <li>Iron deficiency anemia (most common cause)</li>
+      <li>Chronic blood loss (e.g., gastrointestinal bleeding)</li>
+      <li>Frequent exposure to petroleum-based products</li>
+      <li>Hypothyroidism</li>
+      <li>Heart disease (rarely)</li>
+      <li>Genetic predisposition in some families</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Organs Infected</h2>
+    <ul>
+      <li>Nails (fingernails and toenails)</li>
+      <li>Nail matrix (responsible for nail growth)</li>
+      <li>Blood system (iron deficiency / anemia)</li>
+      <li>Thyroid gland (in hypothyroidism-related cases)</li>
+      <li>Cardiovascular system (in rare heart disease cases)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Treatment</h2>
+    <ul>
+      <li>Iron supplementation for anemia</li>
+      <li>Treat underlying causes of blood loss (e.g., ulcers, GI issues)</li>
+      <li>Balanced diet rich in iron, vitamin C, and protein</li>
+      <li>Treat thyroid or heart conditions if present</li>
+      <li>Avoid chemical exposure to nails</li>
+      <li>Nail care: trimming, moisturizing, protecting nails</li>
+    </ul>
+  </div>
+</div>
+
+{% endif %}
+
+{%  if preds=="Onychogryphosis" %}
+<div class="four-columns">
+  <div class="column">
+    <h2>Symptoms</h2>
+    <ul>
+      <li>Thickened, overgrown, and curved nails (resembles a ram’s horn)</li>
+      <li>Yellowish-brown or opaque nail color</li>
+      <li>Pain or discomfort while walking (common in toenails)</li>
+      <li>Difficulty trimming nails due to hardness</li>
+      <li>Nail deformity often asymmetrical</li>
+      <li>Secondary infections around the nail (sometimes)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Causes</h2>
+    <ul>
+      <li>Repeated trauma or pressure on nails (tight shoes, injury)</li>
+      <li>Poor foot/nail hygiene</li>
+      <li>Peripheral vascular disease</li>
+      <li>Fungal infections (onychomycosis)</li>
+      <li>Neglect in elderly patients (common in toenails)</li>
+      <li>Genetic predisposition (rarely)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Organs Infected</h2>
+    <ul>
+      <li>Nails (mostly toenails, occasionally fingernails)</li>
+      <li>Nail bed and surrounding skin</li>
+      <li>Feet (pain and mobility issues)</li>
+      <li>Circulatory system (if vascular disease is underlying)</li>
+      <li>Skin barrier (risk of fungal or bacterial infection)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Treatment</h2>
+    <ul>
+      <li>Professional trimming and thinning of nails (podiatrist care)</li>
+      <li>Use of nail grinders or surgical clippers</li>
+      <li>Soaking nails to soften before cutting</li>
+      <li>Treat underlying fungal infections with antifungals</li>
+      <li>Corrective surgery for severe deformities</li>
+      <li>Proper footwear and foot hygiene to prevent recurrence</li>
+    </ul>
+  </div>
+</div>
+
+{% endif %}
+{%  if preds=="onychomycosis" %}
+<div class="four-columns">
+  <div class="column">
+    <h2>Symptoms</h2>
+    <ul>
+      <li>Thickened nails</li>
+      <li>Yellow, brown, or white discoloration</li>
+      <li>Brittle, crumbly, or ragged nail edges</li>
+      <li>Distorted nail shape</li>
+      <li>Foul odor from the nail</li>
+      <li>Pain or discomfort in severe cases</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Causes</h2>
+    <ul>
+      <li>Fungal infection by dermatophytes (e.g., Trichophyton species)</li>
+      <li>Yeasts (Candida species) or non-dermatophyte molds</li>
+      <li>Excessive sweating (hyperhidrosis)</li>
+      <li>Walking barefoot in damp communal areas (pools, locker rooms)</li>
+      <li>Reduced immunity (diabetes, HIV, old age)</li>
+      <li>History of athlete’s foot (tinea pedis)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Organs Infected</h2>
+    <ul>
+      <li>Nails (toenails more commonly than fingernails)</li>
+      <li>Nail bed and surrounding skin</li>
+      <li>Feet (if associated with athlete’s foot)</li>
+      <li>Immune system indirectly (in immunocompromised patients)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Treatment</h2>
+    <ul>
+      <li>Oral antifungal medications (terbinafine, itraconazole)</li>
+      <li>Topical antifungal creams, lacquers, or solutions</li>
+      <li>Nail debridement (thinning and trimming)</li>
+      <li>Laser therapy for resistant cases</li>
+      <li>Good foot hygiene (keeping feet dry and clean)</li>
+      <li>Preventive measures: avoid sharing shoes/nail tools</li>
+    </ul>
+  </div>
+</div>
+
+{% endif %}
+
+{%  if preds=="pitting" %}
+<div class="four-columns">
+  <div class="column">
+    <h2>Symptoms</h2>
+    <ul>
+      <li>Small depressions or pits on the nail surface</li>
+      <li>Irregular nail texture</li>
+      <li>Discoloration (yellow-brown or opaque spots)</li>
+      <li>Nail splitting or crumbling in severe cases</li>
+      <li>May affect one or multiple nails</li>
+      <li>Associated with other skin/joint symptoms if systemic cause exists</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Causes</h2>
+    <ul>
+      <li>Psoriasis (most common cause)</li>
+      <li>Alopecia areata (autoimmune hair loss condition)</li>
+      <li>Eczema and other chronic dermatitis</li>
+      <li>Reactive arthritis</li>
+      <li>Connective tissue diseases</li>
+      <li>Occasional trauma to nail matrix</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Organs Infected</h2>
+    <ul>
+      <li>Nails (fingernails and toenails)</li>
+      <li>Nail matrix (where nail formation occurs)</li>
+      <li>Skin (in psoriasis and eczema cases)</li>
+      <li>Hair (in alopecia areata-related cases)</li>
+      <li>Joints (in psoriatic or reactive arthritis)</li>
+      <li>Immune system (autoimmune-related diseases)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Treatment</h2>
+    <ul>
+      <li>Treat underlying condition (psoriasis, eczema, arthritis)</li>
+      <li>Topical corticosteroids or vitamin D analogs for nail psoriasis</li>
+      <li>Systemic therapies (methotrexate, biologics in severe cases)</li>
+      <li>Moisturizers to protect nail surface</li>
+      <li>Nail care: gentle trimming, avoid trauma</li>
+      <li>Phototherapy (UV treatment) in resistant cases</li>
+    </ul>
+  </div>
+</div>
+
+{% endif %}
+{%  if preds=="psoriasis" %}
+<div class="four-columns">
+  <div class="column">
+    <h2>Symptoms</h2>
+    <ul>
+      <li>Pitting (tiny depressions on the nail surface)</li>
+      <li>Discoloration (yellow-brown spots, oil-drop appearance)</li>
+      <li>Thickening of nails</li>
+      <li>Nail crumbling or splitting</li>
+      <li>Onycholysis (separation of nail from nail bed)</li>
+      <li>Associated pain or tenderness</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Causes</h2>
+    <ul>
+      <li>Autoimmune reaction where immune system attacks nail cells</li>
+      <li>Genetic predisposition (family history of psoriasis)</li>
+      <li>Psoriasis of skin spreading to nail matrix and nail bed</li>
+      <li>Psoriatic arthritis (joint inflammation linked with nail disease)</li>
+      <li>Environmental triggers (stress, injury, infection)</li>
+      <li>Immune dysregulation with chronic inflammation</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Organs Infected</h2>
+    <ul>
+      <li>Nails (fingernails and toenails)</li>
+      <li>Nail matrix and nail bed</li>
+      <li>Skin (in psoriasis plaques)</li>
+      <li>Joints (in psoriatic arthritis)</li>
+      <li>Immune system (autoimmune dysfunction)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Treatment</h2>
+    <ul>
+      <li>Topical corticosteroids or vitamin D analogs</li>
+      <li>Intralesional corticosteroid injections (in severe nail disease)</li>
+      <li>Systemic therapies (methotrexate, cyclosporine)</li>
+      <li>Biologic agents (etanercept, adalimumab, ustekinumab)</li>
+      <li>Phototherapy (UV light treatment)</li>
+      <li>Proper nail care: trimming, moisturizing, avoiding trauma</li>
+    </ul>
+  </div>
+</div>
+
+{% endif %}
+
+{%  if preds=="terry_s nail" %}
+<div class="four-columns">
+  <div class="column">
+    <h2>Symptoms</h2>
+    <ul>
+      <li>Nails appear white with a “ground-glass” look</li>
+      <li>Pink or reddish-brown band near the nail tips</li>
+      <li>Loss of normal lunula (half-moon shape at nail base)</li>
+      <li>Uniform discoloration across most nails</li>
+      <li>Usually affects all fingernails, sometimes toenails</li>
+      <li>No pain or direct nail damage (cosmetic sign)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Causes</h2>
+    <ul>
+      <li>Liver cirrhosis (most common cause)</li>
+      <li>Chronic heart failure</li>
+      <li>Kidney failure (chronic renal disease)</li>
+      <li>Diabetes mellitus</li>
+      <li>Aging (can occur in elderly without disease)</li>
+      <li>Systemic illnesses affecting circulation and nail bed</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Organs Infected</h2>
+    <ul>
+      <li>Nails (fingernails more than toenails)</li>
+      <li>Liver (cirrhosis, chronic liver disease)</li>
+      <li>Heart (chronic heart failure)</li>
+      <li>Kidneys (chronic renal disease)</li>
+      <li>Endocrine system (diabetes-related changes)</li>
+      <li>Circulatory system (altered blood supply in nail bed)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Treatment</h2>
+    <ul>
+      <li>No direct treatment for nails — focus on underlying cause</li>
+      <li>Liver disease management (antivirals, transplant in severe cases)</li>
+      <li>Heart failure therapy (medications, lifestyle modifications)</li>
+      <li>Kidney failure treatment (dialysis, transplant)</li>
+      <li>Blood sugar control in diabetes</li>
+      <li>Healthy lifestyle (diet, exercise, avoiding alcohol/smoking)</li>
+    </ul>
+  </div>
+</div>
+
+{% endif %}
+{%  if preds=="white nail" %}
+<div class="four-columns">
+  <div class="column">
+    <h2>Symptoms</h2>
+    <ul>
+      <li>White spots or streaks on the nail plate</li>
+      <li>Entire nail may appear white (total leukonychia)</li>
+      <li>Partial whitening in bands or patches</li>
+      <li>Can affect one or multiple nails</li>
+      <li>Usually painless and harmless in mild cases</li>
+      <li>Severe cases linked with systemic disease</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Causes</h2>
+    <ul>
+      <li>Minor nail trauma or injury</li>
+      <li>Nail infections (fungal, bacterial)</li>
+      <li>Zinc or calcium deficiency</li>
+      <li>Systemic diseases (cirrhosis, chronic kidney disease)</li>
+      <li>Chemotherapy or medications</li>
+      <li>Genetic leukonychia (rare inherited condition)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Organs Infected</h2>
+    <ul>
+      <li>Nails (nail plate discoloration)</li>
+      <li>Liver (cirrhosis-related whitening)</li>
+      <li>Kidneys (chronic renal failure)</li>
+      <li>Blood (anemia, malnutrition)</li>
+      <li>Immune system (weakened by systemic illness)</li>
+      <li>Skin/nail bed (fungal or bacterial infection)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Treatment</h2>
+    <ul>
+      <li>Usually no treatment needed for minor cases</li>
+      <li>Maintain good nail hygiene</li>
+      <li>Treat underlying infections (antifungal, antibiotics)</li>
+      <li>Correct nutritional deficiencies (zinc, protein, calcium)</li>
+      <li>Manage systemic illnesses (liver, kidney, anemia)</li>
+      <li>Avoid excessive nail trauma (trimming, manicure safety)</li>
+    </ul>
+  </div>
+</div>
+
+{% endif %}
+
+{%  if preds=="yellow nails" %}
+<div class="four-columns">
+  <div class="column">
+    <h2>Symptoms</h2>
+    <ul>
+      <li>Thickened, yellowish nails</li>
+      <li>Slow nail growth</li>
+      <li>Increased nail curvature</li>
+      <li>Nail detachment from nail bed (onycholysis)</li>
+      <li>Swelling in legs due to lymphedema</li>
+      <li>Respiratory symptoms (chronic cough, pleural effusion)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Causes</h2>
+    <ul>
+      <li>Yellow Nail Syndrome (rare systemic condition)</li>
+      <li>Fungal infections (onychomycosis)</li>
+      <li>Chronic respiratory diseases (bronchiectasis, sinusitis)</li>
+      <li>Lymphedema (lymphatic obstruction)</li>
+      <li>Liver disease or kidney disease</li>
+      <li>Side effects of medications (e.g., tetracyclines)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Organs Infected</h2>
+    <ul>
+      <li>Nails (discoloration and thickening)</li>
+      <li>Lungs (chronic lung disease, pleural effusion)</li>
+      <li>Lymphatic system (lymphedema of legs/arms)</li>
+      <li>Immune system (associated with chronic infection)</li>
+      <li>Liver and kidneys (systemic involvement)</li>
+      <li>Skin/nail bed (secondary fungal infection)</li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2>Treatment</h2>
+    <ul>
+      <li>Treat underlying cause (lung disease, lymphedema, infection)</li>
+      <li>Antifungal therapy for fungal nail infections</li>
+      <li>Vitamin E supplementation (sometimes beneficial)</li>
+      <li>Manual lymphatic drainage and compression for lymphedema</li>
+      <li>Respiratory therapy for chronic lung conditions</li>
+      <li>Nail care: trimming, protection, avoid trauma</li>
+    </ul>
+  </div>
+</div>
+
+{% endif %}
+
+
+        </div>
+
+      </div>
+
+    </section><!-- /About Section -->
+
+
+
+
+  </main>
+
+  <footer id="footer" class="footer">
+
+
+
+
+    <div class="container copyright text-center mt-4">
+      <p>© <span>Copyright</span> <strong class="px-1 sitename">Nail Disease Classification</strong> <span>All Rights Reserved</span></p>
+      <div class="credits">
+        <!-- All the links in the footer should remain intact. -->
+        <!-- You can delete the links only if you've purchased the pro version. -->
+        <!-- Licensing information: https://bootstrapmade.com/license/ -->
+        <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
+        
+      </div>
+    </div>
+
+  </footer>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="static/assets/vendor/php-email-form/validate.js"></script>
+  <script src="static/assets/vendor/aos/aos.js"></script>
+  <script src="static/assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="static/assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="static/assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="static/assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+  <script src="static/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+
+  <!-- Main JS File -->
+  <script src="static/assets/js/main.js"></script>
+
+</body>
+
+</html>

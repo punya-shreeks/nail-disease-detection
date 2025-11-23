@@ -1,0 +1,32 @@
+# Python / venv
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Models / data (do NOT upload large model/data files)
+*.h5
+*.hdf5
+dataset/
+Nail disease/dataset/
+Nail disease/static/uploads/
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Node / lockfiles if present
+node_modules/
+package-lock.json
+
+# Environment
+.env
